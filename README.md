@@ -27,3 +27,15 @@ rake
 ```
 
 This command will only take the time to download the 80+ Mb NASR subscription data if you haven't already downloaded it into the current folder.
+
+Tasks
+-----
+
+If you have the latest subscription and the previous subscription, you can determine if any of the Airspace Classes have changed (Bravo, Charlie and Delta):
+
+```
+$ rake shapefile:diff
+Class B: .
+Class C: .
+Class D: changes
+```
