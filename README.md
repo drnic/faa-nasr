@@ -5,6 +5,10 @@ This repository includes some tools to fetch, convert and compare the FAA's NASR
 
 https://nfdc.faa.gov/xwiki/bin/view/NFDC/56+Day+NASR+Subscription
 
+Outputs:
+
+-	https://gist.github.com/drnic/76c8545a7797cb3dabe1 - Airspace changes since September 18, 2014 (comparing last two NASR subscriptions)
+
 Requirements
 ------------
 
@@ -35,7 +39,29 @@ If you have the latest subscription and the previous subscription, you can deter
 
 ```
 $ rake shapefile:diff
-Class B: .
-Class C: .
-Class D: changes
+Class B: no changes
+
+Class C: no changes
+
+Class D, additional:
+
+* KS, WICHITA, WICHITA, MCCONNELL AFB CLASS D
+
+Class D, updated:
+
+* AK, ANCHORAGE, ANCHORAGE, BRYANT AAF CLASS D
+* AK, BETHEL, BETHEL CLASS D
+* AK, BETHEL, BETHEL CLASS D
+* AK, JUNEAU, JUNEAU CLASS D
+...
 ```
+
+To share the diff via GitHub Gist:
+
+```
+brew install gist
+gist --login
+rake shapefile:diff | gist -f airspace-changes.md -f "Airspace changes since CHANGEDATE (comparing last two NASR subscriptions from https://nfdc.faa.gov/xwiki/bin/view/NFDC/56+Day+NASR+Subscription)"
+```
+
+Then update the URL at top of README.

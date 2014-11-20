@@ -15,6 +15,18 @@ def subscriptions_name_from_to_dates
   names_dates.sort {|nd1, nd2| nd2[:from] <=> nd1[:from] }
 end
 
+def pretty_print_airspaces(airspace_properties)
+  airspace_properties.
+    each do |prop|
+      prop['AIRSPACE'] =~ /(.*), (.*)/
+      prop['STATEFIRST_AIRSPACE'] = "#{$2}, #{$1}"
+    end.
+    sort {|p1, p2| p1['STATEFIRST_AIRSPACE'] <=> p2['STATEFIRST_AIRSPACE']}.
+    each do |properties|
+      puts "* #{properties['STATEFIRST_AIRSPACE']}, #{properties['NAME']}"
+    end
+end
+
 namespace :shapefile do
   FileList['*/Additional_Data/Shape_Files/class_*.shp'].each do |src|
     geojson = src.gsub(/shp$/, "geo.json")
@@ -34,7 +46,7 @@ namespace :shapefile do
   task :diff do
     require "json"
     require "json-compare"
-    suffix = "topo.json"
+    suffix = "geo.json"
     latest, previous, _ = subscriptions_name_from_to_dates
     latest_name, previous_name = latest[:name], previous[:name]
     %w[b c d].each do |airspace_class|
@@ -43,7 +55,27 @@ namespace :shapefile do
         JSON.parse(File.read(file))
       end
       diff = JsonCompare.get_diff(previous_json, latest_json)
-      puts "Class #{airspace_class.upcase}: #{diff.empty? ? '.' : 'changes'}"
+      if diff.empty?
+        puts "\nClass #{airspace_class.upcase}: no changes\n"
+      else
+        if (appended = diff[:update]["features"][:append]) && !appended.empty?
+          puts "\nClass #{airspace_class.upcase}, additional:\n\n"
+          airspace_properties = appended.map do |key, airspace|
+            airspace['properties']
+          end
+          pretty_print_airspaces(airspace_properties)
+        end
+        if (updated = diff[:update]["features"][:update]) && !updated.empty?
+          puts "\nClass #{airspace_class.upcase}, updated:\n\n"
+          airspace_properties = updated.keys.inject([]) do |mem, updated_key|
+            if previous = previous_json["features"][updated_key]
+              mem << previous['properties']
+            end
+            mem
+          end
+          pretty_print_airspaces(airspace_properties)
+        end
+      end
     end
   end
 end
