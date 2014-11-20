@@ -37,7 +37,7 @@ namespace :shapefile do
 
     topojson = src.gsub(/shp$/, "topo.json")
     file topojson => src do
-      sh "topojson #{src} -o #{topojson}"
+      sh "topojson #{src} -o #{topojson} -p"
     end
     task topojson: topojson
   end
