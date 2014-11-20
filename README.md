@@ -20,8 +20,10 @@ npm install -g shapefile
 npm install -g topojson
 ```
 
-To download the latest NASR data set:
+To download the latest NASR data set, and convert NASR `.shp` Shapefiles into JSON:
 
 ```
 rake
 ```
+
+This command will only take the time to download the 80+ Mb NASR subscription data if you haven't already downloaded it into the current folder.

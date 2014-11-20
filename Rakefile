@@ -43,4 +43,4 @@ namespace :fetch do
   end
 end
 
-task default: ["fetch:latest"]
+task default: ["fetch:latest", "shapefile"]
