@@ -19,3 +19,9 @@ bundle install
 npm install -g shapefile
 npm install -g topojson
 ```
+
+To download the latest NASR data set:
+
+```
+rake
+```
